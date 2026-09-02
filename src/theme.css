@@ -1,0 +1,340 @@
+/* ==========================================================================
+   Tema: razão
+
+   A ideia: um livro-caixa que olha para frente. Duas colunas numéricas
+   (entra / sai) em vez de uma com sinal — a posição do número diz o que
+   aconteceu, sem depender de ler um sinal ou uma cor.
+
+   Lançamentos pendentes são previsão, não fato, e por isso recebem
+   tratamento estrutural diferente: filete no lado esquerdo e tinta mais
+   clara. Não é um selo colorido ao lado do valor.
+
+   Um acento só, verde-pinheiro, reservado para interação e para o que
+   exige atenção. Nada é colorido por decoração.
+   ========================================================================== */
+
+:root {
+  --papel:    #F4F6F5;
+  --carta:    #FFFFFF;
+  --tinta:    #1C2B27;
+  --apoio:    #7A8783;
+  --acento:   #1F5D45;
+  --alerta:   #8C3A2B;
+
+  --filete:   rgba(28, 43, 39, .14);
+  --filete-2: rgba(28, 43, 39, .07);
+
+  --serif: 'Spectral', Georgia, 'Times New Roman', serif;
+  --sans:  'Public Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -.005em;
+}
+
+a { color: var(--acento); }
+
+/* estrutura --------------------------------------------------------------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+}
+
+.lateral {
+  background: var(--carta);
+  border-right: 1px solid var(--filete);
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lateral .rodape { margin-top: auto; }
+
+.principal {
+  padding: 34px 44px 72px;
+  max-width: 1020px;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+/* marca — o "Flow" é o único momento de acento na identidade ------------- */
+
+.marca {
+  font-family: var(--serif);
+  font-size: 1.34rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.marca em { font-style: normal; color: var(--acento); }
+
+.legenda { font-size: .78rem; color: var(--apoio); margin-top: 2px; }
+
+.rubrica {
+  font-family: var(--serif);
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--apoio);
+  margin: 26px 0 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--filete-2);
+}
+
+.dado { font-size: .82rem; margin: 0 0 3px; }
+.dado b { font-weight: 500; }
+.dado span { color: var(--apoio); }
+
+.nota { font-size: .76rem; color: var(--apoio); line-height: 1.5; margin: 10px 0 0; }
+
+/* abas -------------------------------------------------------------------- */
+
+.abas {
+  display: flex;
+  gap: 22px;
+  border-bottom: 1px solid var(--filete);
+  margin-bottom: 26px;
+}
+
+.aba {
+  font-family: var(--sans);
+  font-size: .92rem;
+  color: var(--apoio);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 4px 1px 10px;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+
+.aba:hover { color: var(--tinta); }
+
+.aba[aria-selected='true'] {
+  color: var(--tinta);
+  border-bottom-color: var(--acento);
+}
+
+/* razão ------------------------------------------------------------------- */
+
+.tabela { width: 100%; border-collapse: collapse; font-size: .92rem; }
+
+.tabela th {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: .8rem;
+  color: var(--apoio);
+  text-align: left;
+  padding: 0 10px 8px;
+  border-bottom: 1px solid var(--tinta);
+}
+
+.tabela th.cifra { text-align: right; }
+
+.tabela td {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--filete-2);
+}
+
+/* Números tabulares: todos os dígitos com a mesma largura, então as
+   colunas alinham sem precisar de fonte monoespaçada. É a solução
+   tipográfica correta, e fica mais legível que monoespaçada. */
+.cifra {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cifra.vazia { color: var(--filete); }
+
+.dia {
+  font-variant-numeric: tabular-nums;
+  color: var(--apoio);
+  font-size: .86rem;
+}
+
+/* Previsão: filete à esquerda e tinta mais clara. */
+.previsto td { color: var(--apoio); }
+.previsto td:first-child { box-shadow: inset 2px 0 0 var(--acento); }
+
+.verbete b { font-weight: 500; }
+.qualificador { color: var(--apoio); font-size: .86rem; }
+
+.parcela {
+  font-variant-numeric: tabular-nums;
+  color: var(--apoio);
+  font-size: .78rem;
+  margin-left: 7px;
+}
+
+.acoes-linha { display: flex; gap: 6px; justify-content: flex-end; }
+
+.mini {
+  font-size: .74rem;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid var(--filete);
+  color: var(--apoio);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.mini:hover { color: var(--tinta); border-color: var(--apoio); }
+.mini.perigo:hover { color: var(--alerta); border-color: var(--alerta); }
+
+/* fechamento -------------------------------------------------------------- */
+
+.fechamento {
+  margin-top: 26px;
+  border-top: 1px solid var(--tinta);
+  padding-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 40px;
+}
+
+.verba .rot { display: block; font-size: .76rem; color: var(--apoio); }
+
+.verba .val {
+  font-family: var(--serif);
+  font-size: 1.22rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.verba .val.devedor { color: var(--alerta); }
+
+/* formulário -------------------------------------------------------------- */
+
+.painel {
+  background: var(--carta);
+  border: 1px solid var(--filete);
+  padding: 22px 24px;
+  margin-bottom: 28px;
+}
+
+.linha { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 15px; }
+
+.campo { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+
+.campo > span { font-size: .78rem; color: var(--apoio); }
+
+input, select {
+  font-family: var(--sans);
+  font-size: .92rem;
+  color: var(--tinta);
+  background: var(--carta);
+  border: 1px solid var(--filete);
+  border-radius: 3px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+input[type='date'], input[type='month'], input[inputmode='decimal'] {
+  font-variant-numeric: tabular-nums;
+}
+
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+input:disabled, select:disabled { color: var(--apoio); background: var(--papel); }
+
+.acoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+/* botões ------------------------------------------------------------------ */
+
+button {
+  font-family: var(--sans);
+  font-size: .9rem;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 8px 17px;
+  border: 1px solid transparent;
+}
+
+.btn-primario { background: var(--acento); color: var(--carta); }
+.btn-primario:disabled { opacity: .45; cursor: default; }
+
+.btn-simples {
+  background: transparent;
+  color: var(--tinta);
+  border-color: var(--filete);
+}
+
+.btn-simples:hover { border-color: var(--apoio); }
+
+.btn-abrir {
+  width: 100%;
+  background: transparent;
+  color: var(--apoio);
+  border: 1px solid var(--filete);
+  padding: 13px;
+  margin-bottom: 28px;
+}
+
+.btn-abrir:hover { color: var(--acento); border-color: var(--acento); }
+
+/* estados ----------------------------------------------------------------- */
+
+.aviso { font-size: .86rem; color: var(--apoio); }
+.erro { font-size: .86rem; color: var(--alerta); }
+
+.vazio {
+  border: 1px solid var(--filete);
+  padding: 44px 32px;
+  text-align: center;
+  color: var(--apoio);
+  font-size: .9rem;
+}
+
+.vazio strong { color: var(--tinta); font-weight: 500; display: block; margin-bottom: 4px; }
+
+/* entrada ----------------------------------------------------------------- */
+
+.entrada { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.entrada .caixa { width: 330px; }
+.entrada .campo { margin-bottom: 15px; }
+
+.alternar {
+  background: none;
+  border: none;
+  color: var(--acento);
+  font-size: .82rem;
+  padding: 0;
+  margin-top: 16px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .lateral { border-right: none; border-bottom: 1px solid var(--filete); }
+  .principal { padding: 26px 20px 52px; }
+  .fechamento { gap: 26px; }
+}
