@@ -1,0 +1,289 @@
+/* ==========================================================================
+   Estrutura com barra lateral recolhível
+
+   Mesma paleta da tela de entrada: preto, cinza e branco. A barra é branca
+   sobre o cinza claro da página, o que a separa sem precisar de sombra.
+
+   A largura é uma variável, e é ela que muda ao recolher. Assim a
+   transição acontece num lugar só, em vez de cada elemento animar por
+   conta própria.
+   ========================================================================== */
+
+.app {
+  --preto:    #18181B;
+  --grafite:  #3F3F46;
+  --cinza:    #71717A;
+  --cinza-cl: #A1A1AA;
+  --borda:    #E4E4E7;
+  --fundo:    #F4F4F5;
+  --branco:   #FFFFFF;
+
+  --barra: 236px;
+
+  display: grid;
+  grid-template-columns: var(--barra) 1fr;
+  min-height: 100vh;
+  background: var(--fundo);
+  color: var(--preto);
+  transition: grid-template-columns .18s ease;
+}
+
+.app.recolhida { --barra: 64px; }
+
+/* barra ----------------------------------------------------------------- */
+
+.barra {
+  background: var(--branco);
+  border-right: 1px solid var(--borda);
+  display: flex;
+  flex-direction: column;
+  /* A barra acompanha a rolagem da página em vez de rolar junto. */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.barra .topo-barra {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 14px;
+  min-height: 56px;
+}
+
+.barra .logo {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+
+.barra .nome {
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  white-space: nowrap;
+  /* Ao recolher, o texto desaparece antes da largura terminar de encolher.
+     Sem isso ele ficaria cortado no meio durante a transição. */
+  opacity: 1;
+  transition: opacity .1s ease;
+}
+
+.recolhida .nome { opacity: 0; pointer-events: none; }
+
+/* itens ----------------------------------------------------------------- */
+
+.barra nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  font: inherit;
+  font-size: .88rem;
+  color: var(--grafite);
+  background: none;
+  border: none;
+  border-radius: 7px;
+  padding: 9px 10px;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.item .icone {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  color: var(--cinza);
+}
+
+.item .rotulo {
+  opacity: 1;
+  transition: opacity .1s ease;
+}
+
+.recolhida .item .rotulo { opacity: 0; pointer-events: none; }
+
+.item:hover { background: var(--fundo); color: var(--preto); }
+.item:hover .icone { color: var(--preto); }
+
+/* O ativo usa fundo cinza e peso, não cor — é o que sobra em
+   monocromático, e funciona. */
+.item[aria-current='page'] {
+  background: var(--fundo);
+  color: var(--preto);
+  font-weight: 600;
+}
+
+.item[aria-current='page'] .icone { color: var(--preto); }
+
+.item:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: -2px;
+}
+
+.item:disabled {
+  color: var(--cinza-cl);
+  cursor: default;
+}
+
+.item:disabled .icone { color: var(--cinza-cl); }
+.item:disabled:hover { background: none; }
+
+.emBreve {
+  margin-left: auto;
+  font-size: .64rem;
+  font-weight: 500;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--cinza-cl);
+  border: 1px solid var(--borda);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.recolhida .emBreve { display: none; }
+
+/* rodapé ---------------------------------------------------------------- */
+
+.barra .rodape {
+  margin-top: auto;
+  padding: 8px;
+  border-top: 1px solid var(--borda);
+}
+
+.barra .conta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  overflow: hidden;
+}
+
+.barra .avatar {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--preto);
+  color: var(--branco);
+  display: grid;
+  place-items: center;
+  font-size: .68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.barra .email {
+  font-size: .78rem;
+  color: var(--cinza);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity .1s ease;
+}
+
+.recolhida .email { opacity: 0; }
+
+/* conteúdo -------------------------------------------------------------- */
+
+.conteudo {
+  min-width: 0;
+  padding: 0 0 72px;
+}
+
+/* min-width: 0 acima é obrigatório: numa grade, uma coluna 1fr tem
+   min-width auto por padrão, então uma tabela larga empurraria a coluna
+   para além do container em vez de encolher. */
+
+.faixa {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 28px;
+  min-height: 56px;
+  background: var(--branco);
+  border-bottom: 1px solid var(--borda);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.faixa h1 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+
+.faixa .direita { margin-left: auto; display: flex; gap: 8px; }
+
+.icone-botao {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  border-radius: 7px;
+  color: var(--cinza);
+  cursor: pointer;
+  padding: 0;
+  flex: none;
+}
+
+.icone-botao:hover { background: var(--fundo); color: var(--preto); }
+
+.icone-botao:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: 1px;
+}
+
+.pagina { padding: 28px; max-width: 1060px; }
+
+.vazio-pagina {
+  border: 1px dashed var(--borda);
+  border-radius: 10px;
+  background: var(--branco);
+  padding: 56px 32px;
+  text-align: center;
+  color: var(--cinza);
+  font-size: .9rem;
+}
+
+.vazio-pagina strong {
+  display: block;
+  color: var(--preto);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app, .app * { transition: none !important; }
+}
+
+/* Em tela estreita a barra fica sempre recolhida: 236px de barra num
+   celular não sobra espaço para a tabela. */
+@media (max-width: 820px) {
+  .app, .app.recolhida { --barra: 56px; }
+  .app .nome,
+  .app .item .rotulo,
+  .app .email,
+  .app .emBreve { opacity: 0; display: none; }
+  .faixa { padding: 0 16px; }
+  .pagina { padding: 16px; }
+}

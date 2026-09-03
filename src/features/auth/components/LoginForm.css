@@ -1,0 +1,302 @@
+/* ==========================================================================
+   Tela de entrada
+
+   Preto, cinza e branco. Sem cor, o contraste tem que vir de outro lugar:
+   peso tipográfico, espaço em branco, e o botão principal em preto sólido
+   contra o cartão branco. É o único elemento pesado da tela, então o olho
+   vai direto nele.
+
+   O cartão flutua sobre um cinza muito claro em vez de branco puro —
+   sem isso, cartão branco sobre fundo branco precisaria de sombra forte
+   para se separar, e sombra forte envelhece rápido.
+   ========================================================================== */
+
+.entrada {
+  --preto:    #18181B;
+  --grafite:  #3F3F46;
+  --cinza:    #71717A;
+  --cinza-cl: #A1A1AA;
+  --borda:    #E4E4E7;
+  --fundo:    #F4F4F5;
+  --branco:   #FFFFFF;
+
+  min-height: 100vh;
+  background: var(--fundo);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--preto);
+}
+
+/* marca — fora do cartão, como na referência --------------------------- */
+
+.entrada .marca {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 26px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+
+.entrada .marca svg { flex: none; }
+
+/* cartão ---------------------------------------------------------------- */
+
+.entrada .cartao {
+  width: 100%;
+  max-width: 404px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  /* Sombra baixa e difusa. Sombra dura dá aspecto de caixa de diálogo
+     de sistema operacional antigo. */
+  box-shadow: 0 1px 2px rgba(24, 24, 27, .04),
+              0 8px 24px rgba(24, 24, 27, .04);
+  overflow: hidden;
+}
+
+.entrada .cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.entrada .cabecalho h1 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+
+.entrada .corpo { padding: 24px; }
+
+/* manter conectado — interruptor ---------------------------------------- */
+
+.persistir {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: .82rem;
+  color: var(--cinza);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* A caixa real fica escondida mas continua no HTML: é ela que recebe o
+   foco do teclado e que os leitores de tela anunciam. Substituir por uma
+   <div> clicável quebraria as duas coisas. */
+.persistir input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.persistir .trilho {
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--borda);
+  position: relative;
+  transition: background .16s ease;
+  flex: none;
+}
+
+.persistir .trilho::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--branco);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, .2);
+  transition: transform .16s ease;
+}
+
+.persistir input:checked + .trilho { background: var(--preto); }
+.persistir input:checked + .trilho::after { transform: translateX(16px); }
+
+.persistir input:focus-visible + .trilho {
+  outline: 2px solid var(--preto);
+  outline-offset: 2px;
+}
+
+/* campos ---------------------------------------------------------------- */
+
+.entrada .campo { margin-bottom: 18px; }
+
+.entrada .campo .rotulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+
+.entrada .campo label {
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--grafite);
+}
+
+.entrada input[type='text'],
+.entrada input[type='email'],
+.entrada input[type='password'] {
+  width: 100%;
+  font: inherit;
+  font-size: .94rem;
+  color: var(--preto);
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 11px 13px;
+}
+
+.entrada input::placeholder { color: var(--cinza-cl); }
+
+.entrada input:hover { border-color: var(--cinza-cl); }
+
+.entrada input:focus {
+  outline: none;
+  border-color: var(--preto);
+  /* Anel por box-shadow em vez de border mais grossa: a borda mudando de
+     espessura empurraria o campo um pixel e a tela tremeria no foco. */
+  box-shadow: 0 0 0 3px rgba(24, 24, 27, .08);
+}
+
+/* senha com o olho ------------------------------------------------------ */
+
+.senha { position: relative; }
+
+.senha input { padding-right: 44px; }
+
+.olho {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--cinza);
+  cursor: pointer;
+  padding: 0;
+}
+
+.olho:hover { color: var(--preto); background: var(--fundo); }
+
+.olho:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: 1px;
+}
+
+/* botão ----------------------------------------------------------------- */
+
+.entrada .principal {
+  width: 100%;
+  font: inherit;
+  font-size: .94rem;
+  font-weight: 600;
+  color: var(--branco);
+  background: var(--preto);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 4px;
+  cursor: pointer;
+  transition: background .14s ease;
+}
+
+.entrada .principal:hover:not(:disabled) { background: var(--grafite); }
+
+.entrada .principal:disabled {
+  background: var(--cinza-cl);
+  cursor: default;
+}
+
+.entrada .principal:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: 2px;
+}
+
+/* rodapé e mensagens ---------------------------------------------------- */
+
+.entrada .rodape-cartao {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: .86rem;
+  color: var(--cinza);
+}
+
+.entrada .elo {
+  font: inherit;
+  font-weight: 600;
+  color: var(--preto);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.entrada .elo:hover { color: var(--grafite); }
+
+.entrada .discreto {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--cinza);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.entrada .discreto:hover { color: var(--preto); }
+
+/* O erro precisa de peso porque não pode usar cor para chamar atenção.
+   A barra à esquerda faz esse trabalho. */
+.entrada .aviso-erro {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: .84rem;
+  line-height: 1.45;
+  color: var(--grafite);
+  background: var(--fundo);
+  border-left: 2px solid var(--preto);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 12px;
+  margin: 0 0 16px;
+}
+
+.entrada .aviso-erro svg { flex: none; margin-top: 1px; }
+
+.entrada .legenda-pe {
+  margin: 22px 0 0;
+  font-size: .74rem;
+  color: var(--cinza-cl);
+  text-align: center;
+  max-width: 340px;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada * { transition: none !important; }
+}
