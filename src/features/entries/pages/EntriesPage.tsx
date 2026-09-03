@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { api, ApiError, type Entry } from './api'
-import { EntryForm } from './EntryForm'
+import { ApiError } from '../../../api/client'
+import type { Entry } from '../../../api/types'
+import { EntryForm } from '../components/EntryForm'
+import * as entriesApi from '../api'
 
 const moeda = new Intl.NumberFormat('pt-BR', {
   minimumFractionDigits: 2,
@@ -24,31 +26,20 @@ function rotuloDoMes(mes: string): string {
 
 export function EntriesPage() {
   const [mes, setMes] = useState(mesAtual())
-  // Contador só para forçar o useEffect a rodar de novo. Quando o
-  // formulário cria algo, incrementamos isso e a lista recarrega.
   const [versao, setVersao] = useState(0)
 
   const [lancamentos, setLancamentos] = useState<Entry[]>([])
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
 
-  // useEffect roda DEPOIS que a tela é desenhada, e de novo toda vez que
-  // algum item do array no final mudar. Aqui: ao abrir, quando o usuário
-  // troca de mês, e quando o formulário avisa que criou algo.
-  //
-  // Sem esse array, rodaria a cada renderização — e como buscar dados muda
-  // o estado, que causa nova renderização, viraria laço infinito.
   useEffect(() => {
-    // Se o usuário trocar de mês antes da resposta chegar, ignoramos a
-    // resposta velha. Sem isso, uma resposta lenta de janeiro pode
-    // sobrescrever a de fevereiro que já chegou.
     let cancelado = false
 
     async function buscar() {
       setCarregando(true)
       setErro(null)
       try {
-        const dados = await api.lancamentosDoMes(mes)
+        const dados = await entriesApi.obterLancamentosDoMes(mes)
         if (!cancelado) setLancamentos(dados)
       } catch (e) {
         if (!cancelado) {
@@ -63,8 +54,6 @@ export function EntriesPage() {
 
     buscar()
 
-    // Esta função roda quando o efeito é descartado — quando o mês muda
-    // ou o componente sai da tela.
     return () => {
       cancelado = true
     }
@@ -72,7 +61,7 @@ export function EntriesPage() {
 
   async function marcarPago(id: string) {
     try {
-      await api.marcarPago(id)
+      await entriesApi.marcarPago(id)
       setVersao((v) => v + 1)
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Não consegui marcar como pago.')
@@ -82,16 +71,13 @@ export function EntriesPage() {
   async function apagar(id: string, descricao: string) {
     if (!confirm(`Apagar "${descricao}"?`)) return
     try {
-      await api.apagarLancamento(id)
+      await entriesApi.apagarLancamento(id)
       setVersao((v) => v + 1)
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Não consegui apagar.')
     }
   }
 
-  // Estes três não são estado: são calculados a partir do estado. Guardar
-  // em useState o que dá para derivar é fonte clássica de bug — os valores
-  // saem de sincronia e você não sabe qual é o verdadeiro.
   const entra = lancamentos
     .filter((e) => e.categoryType === 'income')
     .reduce((s, e) => s + e.amount, 0)
@@ -149,16 +135,11 @@ export function EntriesPage() {
               </tr>
             </thead>
             <tbody>
-              {/* map transforma cada item do array num <tr>. O "key" é
-                  obrigatório: é como o React sabe qual linha é qual quando
-                  a lista muda. */}
               {lancamentos.map((e) => {
                 const receita = e.categoryType === 'income'
                 const pendente = e.status === 'pending'
 
                 return (
-                  // A linha inteira muda quando é previsão. Informação
-                  // estrutural, não um selo ao lado do valor.
                   <tr key={e.id} className={pendente ? 'previsto' : undefined}>
                     <td className="dia">{e.entryDate.slice(8)}</td>
                     <td className="verbete">
@@ -172,8 +153,6 @@ export function EntriesPage() {
                         {e.accountName && ` · ${e.accountName}`}
                       </div>
                     </td>
-                    {/* Duas colunas em vez de sinal: a posição do número
-                        já diz de que lado o dinheiro andou. */}
                     <td className={receita ? 'cifra' : 'cifra vazia'}>
                       {receita ? moeda.format(e.amount) : '—'}
                     </td>

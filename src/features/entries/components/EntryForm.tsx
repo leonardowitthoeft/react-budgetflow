@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
-import { api, ApiError, type Category, type Lookups, type NovoLancamento } from './api'
+import { ApiError } from '../../../api/client'
+import type { Category, Lookups, NovoLancamento } from '../../../api/types'
+import * as entriesApi from '../api'
 
 const TIPOS = [
   { valor: 'expense', rotulo: 'Despesa' },
@@ -12,11 +14,6 @@ function hojeIso(): string {
 }
 
 type Props = {
-  /**
-   * O formulário avisa o pai que criou algo, e o pai decide o que fazer.
-   * O filho não precisa saber que existe uma lista — é isso que permite
-   * reusar este componente em outro lugar depois.
-   */
   onCriado: () => void
 }
 
@@ -43,14 +40,15 @@ export function EntryForm({ onCriado }: Props) {
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
-  // Carrega categorias e listas uma vez só. As duas chamadas partem juntas
-  // com Promise.all em vez de uma esperar a outra.
   useEffect(() => {
     let cancelado = false
 
     async function carregar() {
       try {
-        const [cats, lks] = await Promise.all([api.categorias(), api.lookups()])
+        const [cats, lks] = await Promise.all([
+          entriesApi.obterCategorias(),
+          entriesApi.obterLookups(),
+        ])
         if (!cancelado) {
           setCategorias(cats)
           setLookups(lks)
@@ -70,15 +68,12 @@ export function EntryForm({ onCriado }: Props) {
     }
   }, [])
 
-  // Valores derivados do estado, não guardados em useState.
   const categoriasDoTipo = categorias.filter((c) => c.type === tipo)
   const subcategorias =
     categorias.find((c) => c.id === categoriaId)?.subcategories ?? []
 
   function trocarTipo(novo: Category['type']) {
     setTipo(novo)
-    // Limpar os dois é essencial: a categoria escolhida não existe no tipo
-    // novo, e enviar um id órfão daria 404 no backend.
     setCategoriaId('')
     setSubcategoriaId('')
   }
@@ -100,7 +95,6 @@ export function EntryForm({ onCriado }: Props) {
     evento.preventDefault()
     setErro(null)
 
-    // O input aceita vírgula (teclado brasileiro), a API quer ponto.
     const montante = Number(valor.replace(',', '.'))
     if (!Number.isFinite(montante) || montante <= 0) {
       setErro('O valor precisa ser maior que zero.')
@@ -128,7 +122,7 @@ export function EntryForm({ onCriado }: Props) {
 
     setSalvando(true)
     try {
-      await api.criarLancamento(corpo)
+      await entriesApi.criarLancamento(corpo)
       limpar()
       onCriado()
     } catch (e) {
@@ -140,8 +134,6 @@ export function EntryForm({ onCriado }: Props) {
     }
   }
 
-  // Renderização condicional: o "if" decide o que a função devolve. Não
-  // existe "trocar de tela" no React; existe devolver outra coisa.
   if (!aberto) {
     return (
       <button className="btn-abrir" onClick={() => setAberto(true)}>
@@ -276,8 +268,6 @@ export function EntryForm({ onCriado }: Props) {
           </select>
         </label>
 
-        {/* && mostra o elemento só quando a condição é verdadeira. É o
-            jeito idiomático de renderizar algo condicionalmente no JSX. */}
         {repeticao === 'installment' && (
           <label className="campo">
             <span>Total de parcelas</span>
