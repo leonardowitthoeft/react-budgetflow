@@ -1,0 +1,60 @@
+.fieldContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: var(--form-label-size, 0.78rem);
+  color: var(--apoio);
+  font-weight: 500;
+}
+
+.input {
+  font-family: var(--sans);
+  font-size: var(--form-field-size, 0.92rem);
+  color: var(--tinta);
+  background: var(--carta);
+  border: 1px solid var(--filete);
+  border-radius: var(--form-border-radius, 3px);
+  padding: var(--form-field-padding, 8px 10px);
+  width: 100%;
+  transition: border-color var(--form-transition, 0.2s ease);
+}
+
+.input::placeholder {
+  color: var(--apoio);
+  opacity: 0.7;
+}
+
+.input:hover {
+  border-color: var(--apoio);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+.input:disabled {
+  color: var(--apoio);
+  background: var(--papel);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input--error {
+  border-color: var(--alerta);
+}
+
+.input--error:focus-visible {
+  outline-color: var(--alerta);
+}
+
+.input[type='number'] {
+  font-variant-numeric: tabular-nums;
+}
+
+.input[type='date'] {
+  font-size: var(--form-field-size, 0.92rem);
+}
