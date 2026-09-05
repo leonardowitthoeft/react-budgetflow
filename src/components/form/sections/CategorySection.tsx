@@ -1,7 +1,7 @@
 import shared from '../shared/formShared.module.css'
 import { FormFieldSelect } from '../fields/FormFieldSelect'
 import type { Category } from '@/api/types'
-import { TIPOS } from '@/features/entries/components/form/constants/formConstants'
+import { TIPOS } from '@/components/form/constants/formConstants'
 
 type Props = {
   tipo: Category['type']

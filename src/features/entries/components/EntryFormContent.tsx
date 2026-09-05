@@ -1,8 +1,8 @@
 import styles from './EntryFormContent.module.css'
-import { CategorySection } from './sections/CategorySection'
-import { BasicFieldsSection } from './sections/BasicFieldsSection'
-import { AccountSection } from './sections/AccountSection'
-import { RepetitionSection } from './sections/RepetitionSection'
+import { CategorySection } from '@/components/form/sections/CategorySection'
+import { BasicFieldsSection } from '@/components/form/sections/BasicFieldsSection'
+import { AccountSection } from '@/components/form/sections/AccountSection'
+import { RepetitionSection } from '@/components/form/sections/RepetitionSection'
 import type { Category, Lookups } from '@/api/types'
 
 type FormState = {

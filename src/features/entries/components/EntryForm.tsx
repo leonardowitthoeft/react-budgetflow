@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useFormData } from './form/hooks/useFormData'
-import { useEntryFormState } from './form/hooks/useEntryFormState'
-import { EntryFormContent } from './form/EntryFormContent'
+import { useFormData } from '@/hooks/form/useFormData'
+import { useEntryFormState } from '@/hooks/form/useEntryFormState'
+import { EntryFormContent } from './EntryFormContent'
 
 type Props = {
   onCriado: () => void

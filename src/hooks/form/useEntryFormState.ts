@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Category, NovoLancamento } from '@/api/types'
 import { ApiError } from '@/api/client'
 import * as entriesApi from '@/features/entries/api'
-import { hojeIso } from '@/features/entries/components/form/constants/formConstants'
+import { hojeIso } from '@/components/form/constants/formConstants'
 
 type FormState = {
   tipo: Category['type']
