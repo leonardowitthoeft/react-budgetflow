@@ -33,6 +33,9 @@ type Handlers = {
   setRepeticao: (v: '' | 'installment' | 'recurring') => void
   setParcelas: (v: string) => void
   setMeses: (v: string) => void
+  trocarTipo: (v: Category['type']) => void
+  trocarCategoria: (v: string) => void
+  limpar: () => void
 }
 
 type Props = {

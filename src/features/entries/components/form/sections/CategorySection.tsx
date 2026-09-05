@@ -33,7 +33,7 @@ export function CategorySection({
           label="Tipo"
           value={tipo}
           onChange={(v) => onTipoChange(v as Category['type'])}
-          options={TIPOS}
+          options={TIPOS as unknown as Array<{ valor: string; rotulo: string }>}
         />
       </div>
 
