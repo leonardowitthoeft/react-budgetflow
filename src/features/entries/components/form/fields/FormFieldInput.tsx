@@ -34,6 +34,7 @@ export function FormFieldInput({
   inputProps = {},
 }: Props) {
   const containerStyle = flex ? { flex } : undefined
+  const { onChange: _, value: __, ...safeProps } = inputProps
 
   return (
     <label className={styles.fieldContainer} style={containerStyle}>
@@ -53,7 +54,7 @@ export function FormFieldInput({
         max={max}
         step={step}
         className={`${styles.input} ${error ? styles['input--error'] : ''}`}
-        {...inputProps}
+        {...safeProps}
       />
     </label>
   )

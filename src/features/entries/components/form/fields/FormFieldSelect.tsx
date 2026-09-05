@@ -14,6 +14,7 @@ type Props = {
   required?: boolean
   error?: boolean
   placeholder?: string
+  flex?: number
 }
 
 export function FormFieldSelect({
@@ -25,9 +26,12 @@ export function FormFieldSelect({
   required = false,
   error = false,
   placeholder,
+  flex,
 }: Props) {
+  const containerStyle = flex ? { flex } : undefined
+
   return (
-    <label className={styles.fieldContainer}>
+    <label className={styles.fieldContainer} style={containerStyle}>
       <span className={styles.label}>
         {label}
         {required && ' *'}
