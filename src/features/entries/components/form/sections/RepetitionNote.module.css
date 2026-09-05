@@ -1,0 +1,21 @@
+/* RepetitionNote - Nota informativa sobre repetição */
+
+.container {
+  display: contents;
+}
+
+.note {
+  font-size: var(--form-note-size, 0.76rem);
+  color: var(--apoio);
+  line-height: 1.5;
+  margin: 10px 0 0;
+  padding: 10px;
+  background: var(--papel);
+  border-radius: var(--form-border-radius, 3px);
+  border-left: 3px solid var(--acento);
+}
+
+.note strong {
+  color: var(--tinta);
+  font-weight: 500;
+}

@@ -34,7 +34,9 @@ export function FormFieldInput({
   inputProps = {},
 }: Props) {
   const containerStyle = flex ? { flex } : undefined
-  const { onChange: _, value: __, ...safeProps } = inputProps
+  const safeProps = Object.fromEntries(
+    Object.entries(inputProps).filter(([key]) => key !== 'onChange' && key !== 'value')
+  )
 
   return (
     <label className={styles.fieldContainer} style={containerStyle}>

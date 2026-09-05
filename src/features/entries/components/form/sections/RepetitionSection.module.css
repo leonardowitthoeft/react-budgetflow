@@ -1,0 +1,40 @@
+/* RepetitionSection - Seção de repetição/parcelamento com campos condicionais */
+
+.container {
+  display: contents;
+}
+
+.selectRow {
+  display: flex;
+  gap: var(--form-spacing-row, 16px);
+  margin-bottom: var(--form-spacing-field, 15px);
+  flex-wrap: wrap;
+}
+
+.selectField {
+  flex: 1;
+  min-width: 140px;
+}
+
+.conditionalFields {
+  display: flex;
+  gap: var(--form-spacing-row, 16px);
+  margin-bottom: var(--form-spacing-field, 15px);
+  max-height: 200px;
+  opacity: 1;
+  overflow: hidden;
+  transition: all var(--form-transition, 0.2s ease);
+  flex-wrap: wrap;
+}
+
+.conditionalFields--hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+.conditionalField {
+  flex: 1;
+  min-width: 140px;
+}

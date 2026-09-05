@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import type { Category, NovoLancamento } from '@/api/types'
+import { ApiError } from '@/api/client'
+import * as entriesApi from '@/features/entries/api'
 import { hojeIso } from '@/features/entries/components/form/constants/formConstants'
 
 type FormState = {
@@ -39,6 +41,7 @@ type UseEntryFormStateReturn = {
   estado: FormState
   handlers: FormHandlers
   montarCorpo: () => { corpo: NovoLancamento; erro: string | null }
+  salvar: () => Promise<{ sucesso: boolean; erro: string | null }>
   reset: () => void
 }
 
@@ -155,5 +158,24 @@ export function useEntryFormState(): UseEntryFormStateReturn {
     limpar,
   }
 
-  return { estado, handlers, montarCorpo, reset }
+  async function salvar(): Promise<{ sucesso: boolean; erro: string | null }> {
+    const { corpo, erro: erroValidacao } = montarCorpo()
+
+    if (erroValidacao) {
+      return { sucesso: false, erro: erroValidacao }
+    }
+
+    try {
+      await entriesApi.criarLancamento(corpo)
+      reset()
+      return { sucesso: true, erro: null }
+    } catch (e) {
+      const mensagem = e instanceof ApiError || e instanceof Error
+        ? e.message
+        : 'Não consegui salvar.'
+      return { sucesso: false, erro: mensagem }
+    }
+  }
+
+  return { estado, handlers, montarCorpo, salvar, reset }
 }

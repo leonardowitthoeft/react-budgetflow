@@ -43,7 +43,9 @@ export function FormFieldSelect({
         required={required}
         className={`${styles.select} ${error ? styles['select--error'] : ''}`}
       >
-        <option value="">{placeholder || 'selecione…'}</option>
+        {!required && (
+          <option value="">{placeholder || 'selecione…'}</option>
+        )}
         {options.map((opt) => (
           <option key={opt.valor} value={opt.valor}>
             {opt.rotulo}
