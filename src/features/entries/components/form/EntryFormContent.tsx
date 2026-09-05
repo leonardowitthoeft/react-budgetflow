@@ -62,9 +62,9 @@ export function EntryFormContent({
 
       <CategorySection
         tipo={estado.tipo}
-        onTipoChange={handlers.setTipo}
+        onTipoChange={handlers.trocarTipo}
         categoriaId={estado.categoriaId}
-        onCategoriaChange={handlers.setCategoriaId}
+        onCategoriaChange={handlers.trocarCategoria}
         subcategoriaId={estado.subcategoriaId}
         onSubcategoriaChange={handlers.setSubcategoriaId}
         categorias={categorias}
