@@ -29,6 +29,7 @@ export function FormFieldSelect({
   flex,
 }: Props) {
   const containerStyle = flex ? { flex } : undefined
+  const temOpcaoVazia = options.some((opt) => opt.valor === '')
 
   return (
     <label className={styles.fieldContainer} style={containerStyle}>
@@ -43,7 +44,7 @@ export function FormFieldSelect({
         required={required}
         className={`${styles.select} ${error ? styles['select--error'] : ''}`}
       >
-        {!required && (
+        {!required && !temOpcaoVazia && (
           <option value="">{placeholder || 'selecione…'}</option>
         )}
         {options.map((opt) => (
