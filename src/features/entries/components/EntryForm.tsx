@@ -34,24 +34,9 @@ export function EntryForm({ onCriado }: Props) {
 
   if (!aberto) {
     return (
-      <button className="btn-abrir" onClick={() => setAberto(true)} disabled={carregando}>
-        {carregando ? 'Carregando…' : 'Registrar lançamento'}
+      <button className="btn-abrir" onClick={() => setAberto(true)}>
+        Registrar lançamento
       </button>
-    )
-  }
-
-  if (carregando) {
-    return <p className="aviso">Carregando formulário…</p>
-  }
-
-  if (erroCarregamento) {
-    return (
-      <div>
-        <p className="erro">{erroCarregamento}</p>
-        <button className="btn-simples" onClick={() => setAberto(false)}>
-          Fechar
-        </button>
-      </div>
     )
   }
 
@@ -61,8 +46,8 @@ export function EntryForm({ onCriado }: Props) {
       handlers={handlers}
       categorias={categorias}
       lookups={lookups}
-      erro={erro}
-      salvando={salvando}
+      erro={erro || erroCarregamento}
+      salvando={salvando || carregando}
       onSubmit={handleSubmit}
       onClose={() => setAberto(false)}
     />
