@@ -1,0 +1,34 @@
+/* EntryFormContent - Conteúdo do formulário de lançamentos */
+
+.form {
+  background: var(--carta);
+  border: 1px solid var(--filete);
+  padding: var(--form-padding, 22px 24px);
+  margin-bottom: var(--form-margin-bottom, 28px);
+  max-width: 100%;
+  border-radius: var(--form-border-radius, 3px);
+}
+
+.title {
+  font-size: var(--form-title-size, 1.05rem);
+  margin-bottom: 18px;
+  font-weight: 500;
+  color: var(--tinta);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.error {
+  font-size: 0.86rem;
+  color: var(--alerta);
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--papel);
+  border-left: 3px solid var(--alerta);
+  border-radius: var(--form-border-radius, 3px);
+}

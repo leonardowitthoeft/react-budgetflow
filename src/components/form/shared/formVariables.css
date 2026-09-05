@@ -1,0 +1,16 @@
+:root {
+  --form-spacing-row: 16px;
+  --form-spacing-field: 15px;
+  --form-padding: 22px 24px;
+  --form-margin-bottom: 28px;
+
+  --form-label-size: 0.78rem;
+  --form-field-size: 0.92rem;
+  --form-title-size: 1.05rem;
+  --form-note-size: 0.76rem;
+
+  --form-border-radius: 3px;
+  --form-field-padding: 8px 10px;
+
+  --form-transition: 0.2s ease;
+}

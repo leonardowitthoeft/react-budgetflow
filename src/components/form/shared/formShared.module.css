@@ -1,0 +1,56 @@
+.row {
+  display: flex;
+  gap: var(--form-spacing-row, 16px);
+  flex-wrap: wrap;
+  margin-bottom: var(--form-spacing-field, 15px);
+}
+
+.rowItem {
+  flex: 1;
+  min-width: 140px;
+}
+
+.rowItem--halfWidth {
+  flex: 0.5;
+  min-width: 70px;
+}
+
+.label {
+  font-size: var(--form-label-size, 0.78rem);
+  color: var(--apoio);
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.fieldContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.errorMessage {
+  font-size: 0.86rem;
+  color: var(--alerta);
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--papel);
+  border-left: 3px solid var(--alerta);
+  border-radius: 2px;
+}
+
+.note {
+  font-size: var(--form-note-size, 0.76rem);
+  color: var(--apoio);
+  line-height: 1.5;
+  margin: 10px 0 0;
+  padding: 10px;
+  background: var(--papel);
+  border-radius: var(--form-border-radius, 3px);
+  border-left: 3px solid var(--acento);
+}
+
+.note strong {
+  color: var(--tinta);
+  font-weight: 500;
+}

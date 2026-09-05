@@ -1,0 +1,48 @@
+.fieldContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: var(--form-label-size, 0.78rem);
+  color: var(--apoio);
+  font-weight: 500;
+}
+
+.select {
+  font-family: var(--sans);
+  font-size: var(--form-field-size, 0.92rem);
+  color: var(--tinta);
+  background: var(--carta);
+  border: 1px solid var(--filete);
+  border-radius: var(--form-border-radius, 3px);
+  padding: var(--form-field-padding, 8px 10px);
+  width: 100%;
+  cursor: pointer;
+  transition: border-color var(--form-transition, 0.2s ease);
+}
+
+.select:hover {
+  border-color: var(--apoio);
+}
+
+.select:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+.select:disabled {
+  color: var(--apoio);
+  background: var(--papel);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.select--error {
+  border-color: var(--alerta);
+}
+
+.select--error:focus-visible {
+  outline-color: var(--alerta);
+}
