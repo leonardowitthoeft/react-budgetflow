@@ -44,6 +44,7 @@ export function BasicFieldsSection({
         <FormFieldInput
           label="Valor"
           type="text"
+          mask="monetario"
           inputMode="decimal"
           placeholder="0,00"
           value={valor}
