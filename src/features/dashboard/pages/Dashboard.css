@@ -1,0 +1,511 @@
+/* ==========================================================================
+   Dashboard
+
+   Duas colunas de largura igual. Resumo à esquerda; à direita, o gasto
+   acumulado e, abaixo dele, as transações recentes.
+
+   TODO seletor aqui começa com .dashboard, de propósito. O theme.css é
+   global e já define .painel, .aviso, .erro, .vazio, .marca, .legenda e
+   .linha para a identidade antiga — sem o escopo, essas regras vazam para
+   cá e trazem borda, padding e fonte serifada de brinde. Foi assim que o
+   botão de recolher da barra ganhou um margin-top que ninguém escreveu.
+
+   Herda a paleta monocromática do layout. A cor entra em três lugares:
+   a barra de cada linha do resumo, a curva do mês corrente e o valor das
+   receitas na lista. Todo o resto é preto, cinza e branco.
+
+   Para trocar o acento (o laranja da referência, por exemplo), mude
+   --acento e --acento-area aqui. Nada mais depende deles.
+   ========================================================================== */
+
+.dashboard {
+  --acento:      #1F5D45;
+  --acento-area: rgba(31, 93, 69, .10);
+  --positivo:    #1F5D45;
+  --negativo:    #8C3A2B;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dashboard .colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.dashboard .coluna-direita {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* topo ------------------------------------------------------------------- */
+
+.dashboard .dashboard-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard .navegador-mes {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dashboard .mes-atual {
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  min-width: 9.5rem;
+  text-align: center;
+}
+
+.dashboard .passo {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 1px solid var(--borda);
+  border-radius: 7px;
+  color: var(--cinza);
+  cursor: pointer;
+  padding: 0;
+}
+
+.dashboard .passo:hover { background: var(--branco); color: var(--preto); }
+
+.dashboard .passo:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: 1px;
+}
+
+.dashboard .voltar-hoje {
+  font: inherit;
+  font-size: .8rem;
+  background: none;
+  border: none;
+  color: var(--cinza);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dashboard .voltar-hoje:hover { color: var(--preto); }
+
+/* avisos ----------------------------------------------------------------- */
+
+.dashboard .aviso {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 28px;
+  text-align: center;
+  color: var(--cinza);
+  font-size: .88rem;
+}
+
+.dashboard .aviso.erro {
+  border-color: rgba(140, 58, 43, .35);
+  color: var(--negativo);
+  text-align: left;
+  padding: 14px 16px;
+}
+
+/* blocos ----------------------------------------------------------------- */
+
+.dashboard .bloco {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 18px 20px 20px;
+  min-width: 0;
+}
+
+/* Título à esquerda, controle à direita, sem quebrar linha. O grupo do
+   título é que encolhe quando falta espaço — o seletor tem largura fixa
+   e ficaria ilegível espremido. */
+.dashboard .cabecalho-bloco {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dashboard .titulo-bloco {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* O título nunca encolhe. Sem isto, o seletor ao lado empurra o h2 até
+   sobrar uma letra só. */
+.dashboard .titulo-bloco h2 { flex: none; }
+
+.dashboard .titulo-bloco .apoio,
+.dashboard .titulo-bloco .total-gasto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard .cabecalho-bloco h2 {
+  margin: 0;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.dashboard .apoio {
+  color: var(--cinza);
+  font-weight: 400;
+  font-size: .8rem;
+}
+
+.dashboard .total-gasto {
+  font-size: .88rem;
+  color: var(--cinza);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard .seletor-comparacao {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 13rem;
+  font: inherit;
+  font-size: .78rem;
+  color: var(--grafite);
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 7px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+
+.dashboard .seletor-comparacao:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: 1px;
+}
+
+/* resumo ----------------------------------------------------------------- */
+
+/* O número de abertura do bloco: o que sobrou depois de pagar tudo.
+   É a única pergunta que a pessoa faz antes de olhar as três linhas. */
+.dashboard .saldo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.dashboard .saldo strong {
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard .saldo strong.bom  { color: var(--positivo); }
+.dashboard .saldo strong.ruim { color: var(--negativo); }
+
+.dashboard .linhas {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard .linha-resumo {
+  padding: 14px 0;
+  border-top: 1px solid var(--borda);
+}
+
+.dashboard .linha-resumo:first-child { border-top: none; padding-top: 0; }
+.dashboard .linha-resumo:last-child { padding-bottom: 0; }
+
+.dashboard .linha-topo,
+.dashboard .linha-base {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: .82rem;
+}
+
+.dashboard .linha-topo { margin-bottom: 8px; }
+.dashboard .linha-base { margin-top: 8px; }
+
+.dashboard .linha-topo .nome {
+  font-size: .88rem;
+  font-weight: 500;
+}
+
+.dashboard .linha-topo .apoio,
+.dashboard .linha-base .sobra { margin-left: auto; }
+
+.dashboard .linha-base .realizado {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard .linha-base .sobra {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--cinza);
+}
+
+.dashboard .linha-base .sobra.bom  { color: var(--positivo); }
+.dashboard .linha-base .sobra.ruim { color: var(--negativo); }
+
+.dashboard .barra-progresso {
+  height: 7px;
+  border-radius: 4px;
+  background: var(--borda);
+  overflow: hidden;
+}
+
+/* Sem mês anterior não há denominador. A barra fica listrada em vez de
+   vazia: vazio se lê como "zero", listrado se lê como "não se aplica". */
+.dashboard .barra-progresso.sem-base {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--fundo) 0 5px,
+    var(--borda) 5px 10px
+  );
+}
+
+.dashboard .barra-progresso .preenchimento {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--acento);
+  transition: width .25s ease;
+}
+
+.dashboard .barra-progresso .preenchimento.ruim   { background: var(--negativo); }
+.dashboard .barra-progresso .preenchimento.neutro { background: var(--cinza-cl); }
+
+/* gráfico ---------------------------------------------------------------- */
+
+.dashboard .grafico {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.dashboard .grafico .grade {
+  stroke: var(--borda);
+  stroke-width: 1;
+}
+
+.dashboard .grafico .rotulo-eixo {
+  fill: var(--cinza-cl);
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.dashboard .grafico .rotulo-eixo.fim  { text-anchor: end; }
+.dashboard .grafico .rotulo-eixo.meio { text-anchor: middle; }
+
+.dashboard .grafico .curva {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* O mês anterior é referência, não protagonista: cinza sólido, sem área,
+   e por isso some atrás da curva do mês corrente. */
+.dashboard .grafico .curva.anterior {
+  stroke: var(--cinza);
+  stroke-width: 1.8;
+}
+
+.dashboard .grafico .curva.atual { stroke: var(--acento); }
+
+.dashboard .grafico .area.atual {
+  fill: var(--acento-area);
+  stroke: none;
+}
+
+.dashboard .grafico .ponta {
+  fill: var(--branco);
+  stroke: var(--acento);
+  stroke-width: 2;
+}
+
+.dashboard .grafico .rotulo-ponta {
+  fill: var(--acento);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.dashboard .grafico .rotulo-ponta.fim { text-anchor: end; }
+
+.dashboard .legenda {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 12px;
+  font-size: .78rem;
+  color: var(--cinza);
+}
+
+.dashboard .legenda span { display: flex; align-items: center; gap: 6px; }
+
+.dashboard .legenda .chave {
+  width: 14px;
+  height: 2px;
+  border-radius: 1px;
+  display: block;
+}
+
+.dashboard .legenda .chave.atual    { background: var(--acento); }
+.dashboard .legenda .chave.anterior { background: var(--cinza); }
+
+/* transações ------------------------------------------------------------- */
+
+.dashboard .lista-transacoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard .lista-transacoes li { border-top: 1px solid var(--borda); }
+.dashboard .lista-transacoes li:first-child { border-top: none; }
+
+/* A linha inteira é o alvo do clique, não só um ícone no fim. Área maior
+   acerta mais fácil, e no teclado é uma parada de tabulação só. */
+.dashboard .linha-transacao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 8px;
+  margin: 0 -8px;
+  cursor: pointer;
+}
+
+.dashboard .linha-transacao:hover { background: var(--fundo); }
+
+.dashboard .linha-transacao:focus-visible {
+  outline: 2px solid var(--preto);
+  outline-offset: -2px;
+}
+
+.dashboard .linha-transacao:disabled { cursor: default; }
+.dashboard .linha-transacao:disabled:hover { background: none; }
+.dashboard .linha-transacao:disabled .chevron { visibility: hidden; }
+
+.dashboard .linha-transacao .marca {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  color: var(--cinza);
+  display: grid;
+  place-items: center;
+  font-family: inherit;
+  font-size: .7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.dashboard .linha-transacao .descricao {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.dashboard .linha-transacao .descricao strong {
+  font-size: .86rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard .linha-transacao .data {
+  font-size: .74rem;
+  color: var(--cinza);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard .linha-transacao .categoria {
+  flex: none;
+  max-width: 9rem;
+  font-size: .78rem;
+  color: var(--cinza);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard .linha-transacao .valor {
+  flex: none;
+  font-size: .86rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard .linha-transacao .valor.income     { color: var(--positivo); }
+.dashboard .linha-transacao .valor.expense    { color: var(--preto); }
+.dashboard .linha-transacao .valor.investment { color: var(--cinza); }
+
+.dashboard .linha-transacao .chevron {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--cinza-cl);
+}
+
+.dashboard .vazio {
+  margin: 0;
+  border: none;
+  padding: 0;
+  text-align: left;
+  color: var(--cinza);
+  font-size: .86rem;
+}
+
+/* -------------------------------------------------------------------------- */
+
+/* Abaixo de 1000px as duas colunas ficam estreitas demais: o gráfico perde
+   os rótulos de dia e o resumo quebra os números em duas linhas. Melhor
+   empilhar. */
+@media (max-width: 1000px) {
+  .dashboard .colunas { grid-template-columns: 1fr; }
+}
+
+/* Na coluna estreita a categoria é a primeira a sair: descrição, valor e
+   data respondem a pergunta melhor do que ela. */
+@media (max-width: 1240px) {
+  .dashboard .linha-transacao .categoria { display: none; }
+}
+
+@media (max-width: 820px) {
+  .dashboard .titulo-bloco .apoio { display: none; }
+  .dashboard .linha-transacao .marca { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard .barra-progresso .preenchimento { transition: none; }
+}
