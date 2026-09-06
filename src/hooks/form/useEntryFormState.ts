@@ -94,7 +94,7 @@ export function useEntryFormState(): UseEntryFormStateReturn {
   }
 
   function montarCorpo(): { corpo: NovoLancamento; erro: string | null } {
-    const montante = Number(valor.replace(',', '.'))
+    const montante = Number(valor.replace(/[^\d,]/g, '').replace(',', '.'))
 
     if (!Number.isFinite(montante) || montante <= 0) {
       return {

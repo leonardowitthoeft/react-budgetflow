@@ -1,3 +1,4 @@
+import { formatMonetario } from '@/utils/FormatCurrencyUtil'
 import styles from './FormFieldInput.module.css'
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
   min?: number | string
   max?: number | string
   step?: number | string
+  mask?: 'monetario'
   inputProps?: Record<string, unknown>
 }
 
@@ -22,7 +24,7 @@ export function FormFieldInput({
   value,
   onChange,
   type = 'text',
-  inputMode,
+  inputMode: customInputMode,
   placeholder,
   required = false,
   disabled = false,
@@ -31,12 +33,25 @@ export function FormFieldInput({
   min,
   max,
   step,
+  mask,
   inputProps = {},
 }: Props) {
   const containerStyle = flex ? { flex } : undefined
   const safeProps = Object.fromEntries(
     Object.entries(inputProps).filter(([key]) => key !== 'onChange' && key !== 'value')
   )
+
+  const inputMode = mask === 'monetario' ? 'decimal' : customInputMode
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+
+    if (mask === 'monetario') {
+      onChange(formatMonetario(newValue))
+    } else {
+      onChange(newValue)
+    }
+  }
 
   return (
     <label className={styles.fieldContainer} style={containerStyle}>
@@ -47,7 +62,7 @@ export function FormFieldInput({
       <input
         type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
         required={required}
         disabled={disabled}
