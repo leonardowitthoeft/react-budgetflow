@@ -8,7 +8,9 @@ export class ApiError extends Error {
 }
 
 export async function requisitar<T>(caminho: string, opcoes: RequestInit = {}): Promise<T> {
+  const cabecalhosCustomizados = opcoes.headers as Record<string, string> | undefined
   const cabecalhos: Record<string, string> = {
+    ...cabecalhosCustomizados,
     ...(opcoes.body ? { 'Content-Type': 'application/json' } : {}),
   }
 
